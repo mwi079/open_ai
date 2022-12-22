@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios'
+import React,{ useState } from 'react';
+import {TextField,Button} from "@mui/material/";
+import LoadingSpin from "react-loading-spin";
 
 function App() {
+
+  const [text, setText]=useState('')
+  const [image,setImage]=useState('')
+  const [loading,setLoading]=useState(false)
+
+  async function handleSubmit(event){
+    event.preventDefault()
+    setLoading(true)
+    const apiKey=process.env.apiKey
+    const headers={'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'}
+
+    await axios.post('https://api.openai.com/v1/images/generations',{'prompt':text},{headers})
+      .then(({data})=>{
+        setImage(data.data[0].url)
+        setLoading(false)
+      }) 
+  }//
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <center>
+      <TextField onChange={(event) => setText(event.target.value)} fullWidth   InputProps={{
+        sx: {
+            "& input": {
+                textAlign: "center"
+            }
+        }
+    }}/>
+      <Button onClick={handleSubmit}>Submit</Button>
+    </center>
+    <center>
+    {loading? <LoadingSpin/>:<img src={image} alt="AI magic" width="500" sx={{input: {textAlign: "center"}}}/>}
+    </center>
     </div>
   );
 }
