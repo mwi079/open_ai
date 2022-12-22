@@ -12,7 +12,7 @@ function App() {
   async function handleSubmit(event){
     event.preventDefault()
     setLoading(true)
-    const apiKey=process.env.apiKey
+    const apiKey=process.env.REACT_APP_apiKey
     const headers={'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'}
 
     await axios.post('https://api.openai.com/v1/images/generations',{'prompt':text},{headers})
